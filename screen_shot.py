@@ -2,13 +2,12 @@
 
 import os
 from selenium import webdriver
+from urllib.parse import urlparse
+from urllib.request import urlopen
 from stop_watch import stop_watch
 
 # set Chrome Driver path
 import chromedriver_binary
-
-import requests
-from urllib.parse import urlparse
 
 IN_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'input/urls.txt')
 OUT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'output/')
@@ -42,8 +41,8 @@ def process_one_url(i, url):
 
 
 def check_status(url):
-    r = requests.get(url)
-    return r.status_code
+    r = urlopen(url)
+    return r.getcode()
 
 
 def capture(url, out):
