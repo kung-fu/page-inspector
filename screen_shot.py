@@ -23,7 +23,7 @@ def main():
     # TODO マルチプロセスにする？
 
     with open(IN_FILE, "r") as f:
-        urls = [line.strip() for line in f.readlines()]
+        urls = [line.strip() for line in f]
 
     for i, url in enumerate(urls):
         process_one_url(i, url)
