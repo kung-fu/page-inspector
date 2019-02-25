@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
+import time
+from functools import wraps
 from selenium import webdriver
 
 # set Chrome Driver path
@@ -19,6 +21,17 @@ USER_AGENT_IPHONE = '--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 10_2 like M
 SCREEN_W, SCREEN_H = 375, 812
 
 
+def stop_watch(func):
+    @wraps(func)
+    def wrapper(*args, **kargs):
+        start = time.time()
+        result = func(*args, **kargs)
+        elapsed_time = time.time() - start
+        print("##STOP_WATCH## {} : {:.4f} sec".format(func.__name__.ljust(30), elapsed_time))
+        return result
+    return wrapper
+
+
 def main():
     # TODO マルチプロセスにする？
 
@@ -26,13 +39,18 @@ def main():
         urls = [line.strip() for line in f.readlines()]
 
     for i, url in enumerate(urls):
-        status_code = check_status(url)
+        process_one_url(i, url)
 
-        parsed = urlparse(url)
-        path = parsed.path.replace('/', '_')
-        out = OUT_PATH + "{}-{}-{}.png".format(i, status_code, path)
 
-        capture(url, out)
+@stop_watch
+def process_one_url(i, url):
+    status_code = check_status(url)
+
+    parsed = urlparse(url)
+    path = parsed.path.replace('/', '_')
+    out = OUT_PATH + "{}-{}-{}.png".format(i, status_code, path)
+
+    capture(url, out)
 
 
 def check_status(url):
