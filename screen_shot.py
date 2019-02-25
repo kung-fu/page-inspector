@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-import time
-from functools import wraps
 from selenium import webdriver
+from stop_watch import stop_watch
 
 # set Chrome Driver path
 import chromedriver_binary
@@ -19,17 +18,6 @@ USER_AGENT_IPHONE = '--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 10_2 like M
 
 # Screen size of iPhone X
 SCREEN_W, SCREEN_H = 375, 812
-
-
-def stop_watch(func):
-    @wraps(func)
-    def wrapper(*args, **kargs):
-        start = time.time()
-        result = func(*args, **kargs)
-        elapsed_time = time.time() - start
-        print("##STOP_WATCH## {} : {:.4f} sec".format(func.__name__.ljust(30), elapsed_time))
-        return result
-    return wrapper
 
 
 def main():
