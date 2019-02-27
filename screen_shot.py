@@ -21,9 +21,8 @@ SCREEN_W, SCREEN_H = 375, 668
 
 TIMEOUT = 20
 
-def main():
-    # TODO マルチプロセスにする？
 
+def main():
     with open(IN_FILE, "r") as f:
         urls = [line.strip() for line in f]
 
