@@ -35,7 +35,7 @@ def process_one_url(i, url):
 
     parsed = urlparse(url)
     path = parsed.path.replace('/', '_')
-    out = OUT_PATH + "{}-{}-{}.png".format(i, status_code, path)
+    out = OUT_PATH + "{}-{}-{}.png".format(i + 1, status_code, path)
 
     capture(url, out)
 
