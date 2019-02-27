@@ -4,6 +4,7 @@ import os
 from selenium import webdriver
 from urllib.parse import urlparse
 from urllib.request import urlopen
+import urllib.error
 from stop_watch import stop_watch
 
 # set Chrome Driver path
@@ -32,7 +33,11 @@ def main():
 
 @stop_watch
 def process_one_url(i, url):
+    try:
     status_code = check_status(url)
+    except Exception as e:
+        print(e)
+        return
 
     parsed = urlparse(url)
     path = parsed.path.replace('/', '_')
@@ -42,8 +47,17 @@ def process_one_url(i, url):
 
 
 def check_status(url):
+    try:
     r = urlopen(url)
     return r.getcode()
+    except urllib.error.HTTPError as e:
+        print(e.reason)
+        return e.code
+    except urllib.error.URLError as e:
+        print(e.reason)
+        raise e
+    except Exception as e:
+        raise e
 
 
 def capture(url, out):
