@@ -18,6 +18,7 @@ USER_AGENT_IPHONE = '--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 10_2 like M
 # Screen size of iPhone 7
 SCREEN_W, SCREEN_H = 375, 668
 
+TIMEOUT = 20
 
 def main():
     # TODO マルチプロセスにする？
@@ -50,7 +51,7 @@ def capture(url, out):
     options.add_argument(USER_AGENT_IPHONE)
     options.add_argument('--headless')
     driver = webdriver.Chrome(options=options)
-    driver.set_page_load_timeout(15)
+    driver.set_page_load_timeout(TIMEOUT)
     driver.set_window_size(SCREEN_W, SCREEN_H)
 
     try:
