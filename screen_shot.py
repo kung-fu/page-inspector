@@ -15,8 +15,8 @@ OUT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'output/')
 USER_AGENT_IPHONE = '--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 10_2 like Mac OS X) ' \
                     'AppleWebKit/602.3.12 (KHTML, like Gecko) Version/10.0 Mobile/14C92 Safari/602.1'
 
-# Screen size of iPhone X
-SCREEN_W, SCREEN_H = 375, 812
+# Screen size of iPhone 7
+SCREEN_W, SCREEN_H = 375, 668
 
 
 def main():
