@@ -1,25 +1,26 @@
 # -*- coding: utf-8 -*-
 
 import os
-from selenium import webdriver
-from urllib.parse import urlparse
-from urllib.request import urlopen
-import urllib.error
-from stop_watch import stop_watch
 
+from selenium import webdriver
 # set Chrome Driver path
 import chromedriver_binary
 
-IN_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'input/urls.txt')
-OUT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'output/')
+from urllib.parse import urlparse
+from urllib.request import urlopen
+import urllib.error
 
-USER_AGENT_IPHONE = '--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 10_2 like Mac OS X) ' \
-                    'AppleWebKit/602.3.12 (KHTML, like Gecko) Version/10.0 Mobile/14C92 Safari/602.1'
+import user_agent
+from stop_watch import stop_watch
+
+IN_FILE = os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), 'input/urls.txt')
+OUT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'output/')
 
 # Screen size of iPhone 7
 SCREEN_W, SCREEN_H = 375, 668
 
-TIMEOUT = 20
+TIMEOUT = 60
 
 
 def main():
@@ -33,7 +34,7 @@ def main():
 @stop_watch
 def process_one_url(i, url):
     try:
-    status_code = check_status(url)
+        status_code = check_status(url)
     except Exception as e:
         print(e)
         return
@@ -47,8 +48,8 @@ def process_one_url(i, url):
 
 def check_status(url):
     try:
-    r = urlopen(url)
-    return r.getcode()
+        r = urlopen(url)
+        return r.getcode()
     except urllib.error.HTTPError as e:
         print(e.reason)
         return e.code
@@ -61,7 +62,7 @@ def check_status(url):
 
 def capture(url, out):
     options = webdriver.ChromeOptions()
-    options.add_argument(USER_AGENT_IPHONE)
+    options.add_argument(user_agent.IPHONE)
     options.add_argument('--headless')
     driver = webdriver.Chrome(options=options)
     driver.set_page_load_timeout(TIMEOUT)
@@ -70,7 +71,7 @@ def capture(url, out):
     try:
         driver.get(url)
         driver.save_screenshot(out)
-    except:
+    except Exception:
         print(out + "time out")
     finally:
         driver.quit()
