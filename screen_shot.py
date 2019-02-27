@@ -72,7 +72,7 @@ def capture(url, out):
         driver.get(url)
         driver.save_screenshot(out)
     except:
-        print("time out")
+        print(out + "time out")
     finally:
         driver.quit()
 
