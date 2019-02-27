@@ -48,6 +48,7 @@ def check_status(url):
 def capture(url, out):
     options = webdriver.ChromeOptions()
     options.add_argument(USER_AGENT_IPHONE)
+    options.add_argument('--headless')
     driver = webdriver.Chrome(options=options)
     driver.set_page_load_timeout(15)
     driver.set_window_size(SCREEN_W, SCREEN_H)
