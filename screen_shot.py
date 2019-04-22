@@ -1,27 +1,28 @@
 # -*- coding: utf-8 -*-
 
 import os
+import time
+
 from selenium import webdriver
-from urllib.parse import urlparse
-from urllib.request import urlopen
-from stop_watch import stop_watch
 
 # set Chrome Driver path
 import chromedriver_binary
 
-IN_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'input/urls.txt')
+from urllib.parse import urlparse
+
+import http_status
+import screen_size
+import user_agent
+from stop_watch import stop_watch
+
+IN_FILE = os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), 'input/urls.txt')
 OUT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'output/')
 
-USER_AGENT_IPHONE = '--user-agent=Mozilla/5.0 (iPhone; CPU iPhone OS 10_2 like Mac OS X) ' \
-                    'AppleWebKit/602.3.12 (KHTML, like Gecko) Version/10.0 Mobile/14C92 Safari/602.1'
-
-# Screen size of iPhone X
-SCREEN_W, SCREEN_H = 375, 812
+TIMEOUT = 60
 
 
 def main():
-    # TODO マルチプロセスにする？
-
     with open(IN_FILE, "r") as f:
         urls = [line.strip() for line in f]
 
@@ -31,32 +32,47 @@ def main():
 
 @stop_watch
 def process_one_url(i, url):
-    status_code = check_status(url)
+    try:
+        status_code = http_status.check_status(url)
+    except Exception as e:
+        print(e)
+        return
 
     parsed = urlparse(url)
     path = parsed.path.replace('/', '_')
-    out = OUT_PATH + "{}-{}-{}.png".format(i, status_code, path)
+    out = OUT_PATH + "{}-{}-{}.png".format(i + 1, status_code, path)
 
-    capture(url, out)
-
-
-def check_status(url):
-    r = urlopen(url)
-    return r.getcode()
+    options = set_option(sp=True)
+    capture(url, options, out)
 
 
-def capture(url, out):
+def set_option(sp=False):
     options = webdriver.ChromeOptions()
-    options.add_argument(USER_AGENT_IPHONE)
+    if sp:
+        options.add_argument(user_agent.IPHONE)
+
+    options.add_argument('--headless')
+    options.add_argument('--disk-cache=false')
+
+    return options
+
+
+def capture(url, options, out):
     driver = webdriver.Chrome(options=options)
-    driver.set_page_load_timeout(15)
-    driver.set_window_size(SCREEN_W, SCREEN_H)
+    driver.set_page_load_timeout(TIMEOUT)
+
+    # w = screen_size.HD_LONG.w
+    # h = screen_size.HD_LONG.h
+    w = screen_size.IPHONE_7_LONG.w
+    h = screen_size.IPHONE_7_LONG.h
 
     try:
         driver.get(url)
+        driver.set_window_size(w, 3000)
+        time.sleep(1)
         driver.save_screenshot(out)
-    except:
-        print("time out")
+    except Exception:
+        print(out + "time out")
     finally:
         driver.quit()
 
